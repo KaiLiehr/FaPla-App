@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
@@ -47,6 +48,34 @@ const TasksScreen = () => {
     setRefreshing(true);
     fetchTasks();
   };
+
+
+  // handles deletion of tasks
+  const deleteTask = async (task: Task) => {
+  try {
+    // Only ask for confirmation if task is unfinished
+    if (!task.finished) {
+      const confirmed = await new Promise<boolean>((resolve) => {
+        Alert.alert(
+          'Delete Task',
+          'This task is not finished yet. Are you sure you want to delete it?',
+          [
+            { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+            { text: 'Delete', style: 'destructive', onPress: () => resolve(true) },
+          ],
+          { cancelable: true }
+        );
+      });
+
+      if (!confirmed) return; // user cancelled
+    }
+
+    await api.delete(`tasks/${task.id}/`);
+    fetchTasks(); // refresh list
+  } catch (error) {
+    console.error('Delete task error:', error);
+  }
+};
 
   const toggleResponsibility = async (task: Task) => {
   try {
@@ -138,17 +167,22 @@ const TasksScreen = () => {
 
         {/* EXPANDED SECTION */}
         {isExpanded && (
-          <View style={styles.expandedSection}>
+        <View style={styles.expandedSection}>
             <Button
-              title={
-                isExecutor
-                  ? 'Give Up Responsibility'
-                  : 'Take Responsibility'
-              }
+              title={isExecutor ? 'Give Up Responsibility' : 'Take Responsibility'}
               onPress={() => toggleResponsibility(item)}
             />
+        {/* Delete Task Button */}
+          <View style={{ marginTop: 12 }}>
+            <Button
+              title="Delete Task"
+              color="#d32f2f"
+              onPress={() => deleteTask(item)}
+            />
           </View>
+        </View>
         )}
+
       </View>
     </TouchableOpacity>
   );
@@ -262,7 +296,8 @@ const styles = StyleSheet.create({
     color: '#888',
   },
   finishedCard: {
-    opacity: 0.6,
+    //opacity: 0.6, cause nested button issue
+    backgroundColor: '#f5f5f5',
   },
 });
 
