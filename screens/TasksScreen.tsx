@@ -10,6 +10,7 @@ import {
   Button,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import api from '../services/api';
 import { Task } from '../types/Task';
@@ -65,26 +66,60 @@ const TasksScreen = () => {
    }
   };
 
+  const toggleFinished = async (task: Task) => {
+  try {
+    await api.patch(`tasks/${task.id}/`, {
+      finished: !task.finished,
+    });
+
+    fetchTasks();
+  } catch (error) {
+    console.error('Toggle finished error:', error);
+  }
+  };
 
 
   const renderItem = ({ item }: { item: Task }) => {
   const isExpanded = expandedTaskId === item.id;
-  const isExecutor = item.executors.length > 0;
+  const isExecutor = item.executors.some(
+    executor => executor.id === user?.id
+  );
 
   return (
     <TouchableOpacity
       activeOpacity={0.9}
-      onPress={() =>
-        setExpandedTaskId(isExpanded ? null : item.id)
-      }
+      onPress={() => setExpandedTaskId(isExpanded ? null : item.id)}
     >
-      <View style={[styles.card, isExpanded && styles.expandedCard]}>
-        <Text style={styles.title}>{item.name}</Text>
+      <View
+        style={[
+          styles.card,
+          isExpanded && styles.expandedCard,
+          item.finished && styles.finishedCard,
+        ]}
+      >
+        {/* ROW: checkbox + title */}
+        <View style={styles.row}>
+          <TouchableOpacity onPress={() => toggleFinished(item)}>
+            <MaterialIcons
+              name={item.finished ? 'check-box' : 'check-box-outline-blank'}
+              size={26}
+              color={item.finished ? '#2e7d32' : '#888'}
+              style={styles.checkbox}
+            />
+          </TouchableOpacity>
 
-        {item.description ? (
-          <Text style={styles.description}>{item.description}</Text>
-        ) : null}
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.title, item.finished && styles.finishedText]}>
+              {item.name}
+            </Text>
 
+            {item.description ? (
+              <Text style={styles.description}>{item.description}</Text>
+            ) : null}
+          </View>
+        </View>
+
+        {/* META INFORMATION */}
         <Text style={styles.meta}>
           {item.scope === null ? 'Personal Task' : 'Household Task'}
         </Text>
@@ -116,8 +151,12 @@ const TasksScreen = () => {
         )}
       </View>
     </TouchableOpacity>
-   );
-  };
+  );
+};
+
+  const sortedTasks = [...tasks].sort(
+  (a, b) => Number(a.finished) - Number(b.finished)
+  );
 
   return (
     <View style={styles.container}>
@@ -131,7 +170,7 @@ const TasksScreen = () => {
         </View>
       ) : (
         <FlatList
-          data={tasks}
+          data={sortedTasks}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           refreshControl={
@@ -209,6 +248,21 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: 'white',
     fontWeight: 'bold',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  checkbox: {
+    marginRight: 12,
+    marginTop: 2,
+  },
+  finishedText: {
+    textDecorationLine: 'line-through',
+    color: '#888',
+  },
+  finishedCard: {
+    opacity: 0.6,
   },
 });
 
