@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import api from '../services/api';
 import { ShoppingItem } from '../types/Task';
 import { useAuth } from '../context/AuthContext';
@@ -67,59 +69,68 @@ const ShoppingScreen = () => {
   }; 
   */
 
+// if clicked, send a patch req to reverse bought status
+const toggleBought = async (item: ShoppingItem) => {
+  try {
+    await api.patch(`shopping-items/${item.id}/`, {
+      bought: !item.bought,
+    });
 
+    fetchShoppingItems(); // refresh list
+  } catch (error) {
+    console.error('Toggle bought error:', error);
+  }
+};
 
-  const renderItem = ({ item }: { item: ShoppingItem }) => {
-  //const isExpanded = expandedTaskId === item.id;
-  //const isExecutor = item.executors.length > 0;
-
-  // TODO maybe add scope, date and creator?
+const renderItem = ({ item }: { item: ShoppingItem }) => {
   return (
-    <TouchableOpacity activeOpacity={0.9}> 
-      <View style={styles.card}>
-        {/* Item name */}
-        <Text style={[styles.title, item.bought && styles.boughtText]}>
-          {item.name}
-        </Text>  
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => toggleBought(item)}
+    >
+      <View style={[styles.cardRow, item.bought && styles.boughtItem]}>
 
-        {/* Amount */}
-        {item.amount ? (
-          <Text style={styles.meta}>
-            Amount: {item.amount}
+        {/* Checkbox */}
+        <MaterialIcons
+          name={item.bought ? 'check-box' : 'check-box-outline-blank'}
+          size={26}
+          color={item.bought ? '#2e7d32' : '#888'}
+          style={styles.checkbox}
+        />
+
+        {/* Item content */}
+        <View style={styles.itemContent}>
+          <Text style={[styles.title, item.bought && styles.boughtText]}>
+            {item.name}
           </Text>
-        ) : null}
 
-        {/* Optional description */}
-        {item.description ? (
-          <Text style={styles.description}>{item.description}</Text>
-        ) : null}
+          {item.amount ? (
+            <Text style={styles.meta}>Amount: {item.amount}</Text>
+          ) : null}
 
-        {/* Preferred brand */}
-        {item.preferred_brand ? (
-          <Text style={styles.meta}>
-            Brand: {item.preferred_brand}
-          </Text>
-        ) : null}
+          {item.preferred_brand ? (
+            <Text style={styles.meta}>
+              Brand: {item.preferred_brand}
+            </Text>
+          ) : null}
 
-        {/* Store */}
-        {item.store ? (
-          <Text style={styles.meta}>
-            Store: {item.store}
-          </Text>
-        ) : null}
+          {item.store ? (
+            <Text style={styles.meta}>
+              Store: {item.store}
+            </Text>
+          ) : null}
 
-        {/* Bought status */}
-        {item.bought && (
-          <Text style={styles.meta}>
-            ✓ Bought
-          </Text>
-        )}
+          {item.description ? (
+            <Text style={styles.description}>
+              {item.description}
+            </Text>
+          ) : null}
+        </View>
+
       </View>
     </TouchableOpacity>
   );
-
-  
-}; 
+};
 
 return (
   <View style={styles.container}>
@@ -212,6 +223,25 @@ const styles = StyleSheet.create({
   boughtText: {
     textDecorationLine: 'line-through',
     color: '#888',
+  },
+  cardRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    backgroundColor: '#ffffff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    elevation: 2,
+  },
+  checkbox: {
+    marginRight: 12,
+    marginTop: 2,
+  },
+  itemContent: {
+    flex: 1,
+  },
+  boughtItem: {
+    opacity: 0.6,
   },
 });
 
