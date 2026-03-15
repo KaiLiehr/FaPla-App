@@ -132,6 +132,12 @@ const renderItem = ({ item }: { item: ShoppingItem }) => {
   );
 };
 
+// split shopping list into not bought up top and bought below
+const sortedShoppingItems = [...shoppingItems].sort(
+  (a, b) => Number(a.bought) - Number(b.bought)
+);
+
+
 return (
   <View style={styles.container}>
     {loading ? (
@@ -144,7 +150,7 @@ return (
       </View>
     ) : (
       <FlatList
-        data={shoppingItems}
+        data={sortedShoppingItems}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
         refreshControl={
