@@ -6,8 +6,9 @@ import {
   ActivityIndicator,
   StyleSheet,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import api from '../services/api';
 
@@ -30,6 +31,8 @@ const HouseholdScreen = () => {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const navigation = useNavigation();
 
   const fetchHouseholds = async () => {
     try {
@@ -70,36 +73,45 @@ const HouseholdScreen = () => {
     );
   };
 
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (!households.length) {
-    return (
-      <View style={styles.center}>
-        <Text>You are not part of any households.</Text>
-      </View>
-    );
-  }
-
   return (
-    <FlatList
-      data={households}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderItem}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      contentContainerStyle={{ padding: 16 }}
-    />
+    <View style={styles.container}>
+      {loading ? (
+        <View style={styles.center}>
+          <ActivityIndicator size="large" />
+        </View>
+      ) : households.length === 0 ? (
+        <View style={styles.center}>
+          <Text>You are not part of any households.</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={households}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          contentContainerStyle={{ padding: 16, paddingBottom: 100 }}
+        />
+      )}
+
+      {/* Floating Create Household Button */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('CreateHousehold' as never)}
+      >
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
   card: {
     backgroundColor: '#ffffff',
     padding: 16,
@@ -131,6 +143,25 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 30,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#2e7d32',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+
+  fabText: {
+    fontSize: 28,
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 
