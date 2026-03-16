@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import TasksStack from './TasksStack';
-import FamilyScreen from '../screens/FamilyScreen';
+import HouseholdScreen from '../screens/HouseholdScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 import ShoppingScreen from '../screens/ShoppingScreen';
 import HeaderUser from '../components/HeaderUser';
@@ -24,7 +24,7 @@ const AppTabs = () => {
             case 'Tasks':
               iconName = 'checklist';
               break;
-            case 'Family':
+            case 'Household':
               iconName = 'group';
               break;
             case 'Calendar':
@@ -49,7 +49,7 @@ const AppTabs = () => {
       })}
     >
       <Tab.Screen name="Tasks" component={TasksStack} />
-      <Tab.Screen name="Family" component={FamilyScreen} />
+      <Tab.Screen name="Household" component={HouseholdScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
       <Tab.Screen name="Shopping" component={ShoppingItemsStack} />
     </Tab.Navigator>

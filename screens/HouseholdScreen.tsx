@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const FamilyScreen = () => {
+const HouseholdScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Family Screen</Text>
+      <Text style={styles.text}>Household Screen</Text>
     </View>
   );
 };
@@ -20,4 +20,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FamilyScreen;
+export default HouseholdScreen;
