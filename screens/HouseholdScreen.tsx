@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
@@ -46,6 +47,30 @@ const HouseholdScreen = () => {
     }
   };
 
+const leaveHousehold = async (household: Household) => {
+  try {
+    const confirmed = await new Promise<boolean>((resolve) => {
+      Alert.alert(
+        'Leave Household',
+        `Are you sure you want to leave "${household.name}"? (If the last member leaves, the household gets deleted, entirely.)`,
+        [
+          { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+          { text: 'Leave', style: 'destructive', onPress: () => resolve(true) },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    if (!confirmed) return;
+
+    await api.delete(`memberships/${household.id}/`);
+
+    fetchHouseholds(); // refresh list
+  } catch (error) {
+    console.error('Leave household error:', error);
+  }
+ };
+
   useFocusEffect(
     useCallback(() => {
       fetchHouseholds();
@@ -69,6 +94,14 @@ const HouseholdScreen = () => {
             • {member.member_name}
           </Text>
         ))}
+
+        {/* Leave Button */}
+        <TouchableOpacity
+          style={styles.leaveButton}
+          onPress={() => leaveHousehold(item)}
+        >
+          <Text style={styles.leaveButtonText}>Leave Household</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -162,6 +195,17 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: 'white',
     fontWeight: 'bold',
+  },
+  leaveButton: {
+    marginTop: 12,
+    backgroundColor: '#d32f2f',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  leaveButtonText: {
+    color: 'white',
+    fontWeight: '600',
   },
 });
 
