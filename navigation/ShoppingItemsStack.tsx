@@ -1,15 +1,12 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { ShoppingItemsStackParamList } from '../types/navigation';
+
 import ShoppingScreen from '../screens/ShoppingScreen';
 import ShoppingItemDetailsScreen from '../screens/ShoppingItemDetailsScreen';
 import CreateShoppingItemScreen from '../screens/CreateShoppingItemScreen';
 
-export type ShoppingItemsStackParamList = {
-  ShoppingItemsList: undefined;
-  ShoppingItemDetails: undefined;
-  CreateShoppingItem: undefined;
-};
 
 const Stack = createNativeStackNavigator<ShoppingItemsStackParamList>();
 

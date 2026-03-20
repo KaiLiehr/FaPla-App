@@ -10,6 +10,9 @@ import {
   Button,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { ShoppingItemsStackParamList } from '../types/navigation';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 

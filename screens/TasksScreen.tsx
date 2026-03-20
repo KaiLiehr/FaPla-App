@@ -13,6 +13,9 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { TasksStackParamList } from '../types/navigation';
+
 import api from '../services/api';
 import { Task } from '../types/Task';
 import { useAuth } from '../context/AuthContext';

@@ -1,13 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Householdscreen from '../screens/HouseholdScreen';
-import CreateHouseholdScreen from '../screens/CreateHouseholdScreen';
+import { HouseholdStackParamList } from '../types/navigation';
 
-export type HouseholdStackParamList = {
-  Households: undefined;
-  CreateHousehold: undefined;
-};
+import HouseholdScreen from '../screens/HouseholdScreen';
+import CreateHouseholdScreen from '../screens/CreateHouseholdScreen';
+import InviteMemberScreen from '../screens/InviteMemberScreen';
+
+
 
 const Stack = createNativeStackNavigator<HouseholdStackParamList>();
 
@@ -16,13 +16,18 @@ const HouseholdStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Households"
-        component={Householdscreen}
+        component={HouseholdScreen}
         options={{ title: 'Households' }}
       />
       <Stack.Screen
         name="CreateHousehold" 
         component={CreateHouseholdScreen} 
         options={{ title: 'Create Household' }}
+      />
+      <Stack.Screen
+        name="InviteMember"
+        component={InviteMemberScreen}
+        options={{ title: 'Invite Member' }}
       />
     </Stack.Navigator>
   );

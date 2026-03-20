@@ -1,6 +1,6 @@
 // component for displaying the user in the top right corner
 import React from 'react';
-import { Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, Alert, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 
 const HeaderUser = () => {
@@ -19,18 +19,29 @@ const HeaderUser = () => {
 
   return (
     <TouchableOpacity onPress={handleLogout}>
-      <Text style={styles.username}>
-        {user?.username ?? ''}
-      </Text>
+      <View style={styles.container}>
+        <Text style={styles.username}>{user?.username ?? ''}</Text>
+        {user?.id !== undefined && (
+          <Text style={styles.userId}> • ID: {user.id}</Text>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  username: {
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 12,
+  },
+  username: {
     fontWeight: '600',
     fontSize: 14,
+  },
+  userId: {
+    fontSize: 12,
+    color: '#888', // slightly lighter than the username
   },
 });
 

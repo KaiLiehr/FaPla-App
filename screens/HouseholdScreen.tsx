@@ -10,6 +10,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { HouseholdStackParamList } from '../types/navigation';
 
 import api from '../services/api';
 
@@ -28,12 +30,20 @@ type Household = {
   members: HouseholdMember[];
 };
 
+
+type HouseholdNavProp = NativeStackNavigationProp<
+  HouseholdStackParamList,
+  'Households'
+>;
+
+
+
 const HouseholdScreen = () => {
   const [households, setHouseholds] = useState<Household[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<HouseholdNavProp>();
 
   const fetchHouseholds = async () => {
     try {
@@ -102,6 +112,19 @@ const leaveHousehold = async (household: Household) => {
         >
           <Text style={styles.leaveButtonText}>Leave Household</Text>
         </TouchableOpacity>
+
+        {/* Invite Button */}
+        <TouchableOpacity
+          style={styles.inviteButton}
+          onPress={() =>
+            navigation.navigate('InviteMember', {
+              householdId: item.id,
+            })
+          }
+        >
+          <Text style={styles.inviteButtonText}>Invite New Member</Text>
+        </TouchableOpacity>
+
       </View>
     );
   };
@@ -204,6 +227,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   leaveButtonText: {
+    color: 'white',
+    fontWeight: '600',
+  },
+  inviteButton: {
+    marginTop: 8,
+    backgroundColor: '#1976d2',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  inviteButtonText: {
     color: 'white',
     fontWeight: '600',
   },

@@ -1,15 +1,12 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { TasksStackParamList } from '../types/navigation';
+
 import TasksScreen from '../screens/TasksScreen';
 import TaskDetailsScreen from '../screens/TaskDetailsScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen';
 
-export type TasksStackParamList = {
-  TasksList: undefined;
-  TaskDetails: undefined;
-  CreateTask: undefined;
-};
 
 const Stack = createNativeStackNavigator<TasksStackParamList>();
 
