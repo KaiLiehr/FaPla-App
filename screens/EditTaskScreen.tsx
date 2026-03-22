@@ -103,8 +103,8 @@ const EditTaskScreen = () => {
         />
       )}
 
-      <Text style={styles.label}>Task Type</Text>
-      <TextInput style={styles.input} value={type} onChangeText={setType} />
+      {/*<Text style={styles.label}>Task Type</Text>
+      <TextInput style={styles.input} value={type} onChangeText={setType} /> TEMPORARILY DISABLED CAUSE UNNEEDED*/}
 
       {/* Scope Selection */}
       <Text style={styles.label}>Scope</Text>

@@ -106,13 +106,13 @@ const CreateTaskScreen = () => {
         />
     )}
 
-      <Text style={styles.label}>Task Type</Text>
+      {/*<Text style={styles.label}>Task Type</Text>
       <TextInput
         style={styles.input}
         value={type}
         onChangeText={setType}
         placeholder="chore / cooking / shopping"
-      />
+      /> */}
 
       <View>
         <Text style={styles.label}>Scope</Text>
