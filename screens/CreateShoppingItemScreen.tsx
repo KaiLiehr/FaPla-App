@@ -12,6 +12,7 @@ import {
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useHouseholds } from '../context/HouseholdContext';
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,7 +21,8 @@ const CreateShoppingItemScreen = () => {
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [isPersonal, setIsPersonal] = useState(true);
+  const { households } = useHouseholds();
+  const [selectedHouseholdId, setSelectedHouseholdId] = useState<number | null>(null);
   const [amount, setAmount] = useState('');
   const [preferredBrand, setPreferredBrand] = useState('');
   const [store, setStore] = useState('');
@@ -40,10 +42,7 @@ const CreateShoppingItemScreen = () => {
         store,
       };
 
-      if (!isPersonal) {
-        // for now household tasks not implemented in UI
-        payload.scope = null;
-      }
+      payload.scope = selectedHouseholdId;
 
       await api.post('shopping-items/', payload);
 
@@ -100,10 +99,29 @@ const CreateShoppingItemScreen = () => {
         placeholder="e.g. REWE, Lidl, Aldi"
       />
 
-      <View style={styles.switchRow}>
-        <Text>Personal Item</Text>
-        <Switch value={isPersonal} onValueChange={setIsPersonal} />
-      </View>
+      <Text style={styles.label}>Scope</Text>
+      <TouchableOpacity
+        style={[
+          styles.option,
+          selectedHouseholdId === null && styles.selectedOption,
+        ]}
+        onPress={() => setSelectedHouseholdId(null)}
+      >
+       <Text>Personal</Text>
+      </TouchableOpacity>
+
+      {households.map(h => (
+      <TouchableOpacity
+        key={h.id}
+        style={[
+          styles.option,
+          selectedHouseholdId === h.id && styles.selectedOption,
+        ]}
+        onPress={() => setSelectedHouseholdId(h.id)}
+      >
+        <Text>{h.name}</Text>
+      </TouchableOpacity>
+      ))}
 
       <Button title="Add to shopping list" onPress={CreateShoppingItem} />
     </View>
@@ -140,6 +158,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 16,
     alignItems: 'center',
+  },
+  option: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  selectedOption: {
+    borderColor: '#2e7d32',
+    backgroundColor: '#e8f5e9',
+  },
+  optionText: {
+    fontSize: 14,
   },
 });
 

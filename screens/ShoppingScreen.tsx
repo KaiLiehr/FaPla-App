@@ -20,6 +20,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import api from '../services/api';
 import { ShoppingItem } from '../types/Task';
 import { useAuth } from '../context/AuthContext';
+import { useHouseholds } from '../context/HouseholdContext';
 
 const ShoppingScreen = () => {
   const [shoppingItems, setShoppingItems] = useState<ShoppingItem[]>([]);
@@ -27,9 +28,8 @@ const ShoppingScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   //const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
   const { user } = useAuth();
-  const navigation = useNavigation<
-  NativeStackNavigationProp<ShoppingItemsStackParamList>
->();
+  const navigation = useNavigation<NativeStackNavigationProp<ShoppingItemsStackParamList>>();
+  const { getHouseholdName, setHouseholds } = useHouseholds();
 
   const fetchShoppingItems = async () => {
     try {
@@ -54,6 +54,22 @@ const ShoppingScreen = () => {
     setRefreshing(true);
     fetchShoppingItems();
   };
+
+const resolveHouseholdName = (householdId: number | null) => {
+  const name = getHouseholdName(householdId);
+
+  if (name === 'Unknown Household' && householdId) {
+    api.get('my-households/').then(res => {
+      const newHouseholds = res.data.map((h: any) => ({
+        id: h.id,
+        name: h.name,
+      }));
+      setHouseholds(newHouseholds);
+    });
+  }
+
+  return name;
+};
 
  /* // CURRENTLY NO RESPONSIBILITY FOR SHOPPING ITEMS
  const toggleResponsibility = async (task: Task) => {
@@ -139,6 +155,10 @@ const renderItem = ({ item }: { item: ShoppingItem }) => {
           {item.amount ? (
             <Text style={styles.meta}>Amount: {item.amount}</Text>
           ) : null}
+
+          <Text style={styles.meta}>
+            {resolveHouseholdName(item.scope)}
+          </Text>
 
           {item.preferred_brand ? (
             <Text style={styles.meta}>

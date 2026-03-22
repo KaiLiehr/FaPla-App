@@ -7,9 +7,12 @@ import {
   StyleSheet,
   Alert,
   Switch,
+  TouchableOpacity,
 } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+import { useHouseholds } from '../context/HouseholdContext';
 
 import api from '../services/api';
 
@@ -24,7 +27,8 @@ const EditShoppingItemScreen = () => {
   const [amount, setAmount] = useState(item.amount || '');
   const [preferredBrand, setPreferredBrand] = useState(item.preferred_brand || '');
   const [store, setStore] = useState(item.store || '');
-  const [isPersonal, setIsPersonal] = useState(item.scope === null);
+  const { households } = useHouseholds();
+  const [selectedHouseholdId, setSelectedHouseholdId] = useState<number | null>(item.scope);
 
   const updateItem = async () => {
     if (!name.trim()) {
@@ -41,9 +45,7 @@ const EditShoppingItemScreen = () => {
         store,
       };
 
-      if (!isPersonal) {
-        payload.scope = null; // keep consistent with your current logic
-      }
+      payload.scope = selectedHouseholdId;
 
       await api.patch(`shopping-items/${item.id}/`, payload);
 
@@ -93,10 +95,30 @@ const EditShoppingItemScreen = () => {
         onChangeText={setStore}
       />
 
-      <View style={styles.switchRow}>
-        <Text>Personal Item</Text>
-        <Switch value={isPersonal} onValueChange={setIsPersonal} />
-      </View>
+      <Text style={styles.label}>Scope</Text>
+
+        <TouchableOpacity
+            style={[
+                styles.option,
+                selectedHouseholdId === null && styles.selectedOption,
+            ]}
+            onPress={() => setSelectedHouseholdId(null)}
+        >
+            <Text>Personal</Text>
+        </TouchableOpacity>
+
+        {households.map(h => (
+            <TouchableOpacity
+                key={h.id}
+                style={[
+                    styles.option,
+                    selectedHouseholdId === h.id && styles.selectedOption,
+                ]}
+                onPress={() => setSelectedHouseholdId(h.id)}
+            >
+                <Text>{h.name}</Text>
+            </TouchableOpacity>
+        ))}
 
       <Button title="Save Changes" onPress={updateItem} />
     </View>
@@ -129,6 +151,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 16,
     alignItems: 'center',
+  },
+  option: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    marginTop: 6,
+  },
+  selectedOption: {
+    borderColor: '#2e7d32',
+    backgroundColor: '#e8f5e9',
   },
 });
 
