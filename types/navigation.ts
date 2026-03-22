@@ -1,3 +1,4 @@
+import { Task } from '../types/Task';
 // Household stack
 export type HouseholdStackParamList = {
   Households: undefined;
@@ -10,6 +11,7 @@ export type TasksStackParamList = {
   TasksList: undefined;
   TaskDetails: undefined;
   CreateTask: undefined;
+  EditTask: { task: Task };
 };
 
 // Shopping stack

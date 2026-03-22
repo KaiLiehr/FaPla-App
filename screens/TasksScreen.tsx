@@ -21,6 +21,11 @@ import { Task } from '../types/Task';
 import { useAuth } from '../context/AuthContext';
 import { useHouseholds } from '../context/HouseholdContext';
 
+type TasksNavProp = NativeStackNavigationProp<
+  TasksStackParamList,
+  'TasksList'
+>;
+
 const TasksScreen = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const { households, getHouseholdName, setHouseholds } = useHouseholds();
@@ -28,7 +33,7 @@ const TasksScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
   const { user } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<TasksNavProp>();
 
   const fetchTasks = async () => {
     try {
@@ -187,11 +192,26 @@ const resolveHouseholdName = (householdId: number | null) => {
         {/* EXPANDED SECTION */}
         {isExpanded && (
         <View style={styles.expandedSection}>
+
+          {/* EDIT BUTTON */}
+          <View style={{ marginTop: 12 }}>
+            <Button
+              title="Edit Task"
+              onPress={() =>
+                navigation.navigate('EditTask', { task: item })
+              }
+            />
+          </View>
+
+          {/* Responsibility Button */}
+          <View style={{ marginTop: 12 }}>
             <Button
               title={isExecutor ? 'Give Up Responsibility' : 'Take Responsibility'}
               onPress={() => toggleResponsibility(item)}
             />
-        {/* Delete Task Button */}
+          </View>
+
+          {/* Delete Task Button */}
           <View style={{ marginTop: 12 }}>
             <Button
               title="Delete Task"
@@ -199,6 +219,7 @@ const resolveHouseholdName = (householdId: number | null) => {
               onPress={() => deleteTask(item)}
             />
           </View>
+
         </View>
         )}
 

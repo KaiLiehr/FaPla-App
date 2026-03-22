@@ -6,6 +6,7 @@ import { TasksStackParamList } from '../types/navigation';
 import TasksScreen from '../screens/TasksScreen';
 import TaskDetailsScreen from '../screens/TaskDetailsScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen';
+import EditTaskScreen from '../screens/EditTaskScreen';
 
 
 const Stack = createNativeStackNavigator<TasksStackParamList>();
@@ -28,6 +29,11 @@ const TasksStack = () => {
         name="CreateTask" 
         component={CreateTaskScreen} 
         options={{ title: 'Create Task' }}
+      />
+      <Stack.Screen
+        name="EditTask"
+        component={EditTaskScreen}
+        options={{ title: 'Edit Task' }}
       />
     </Stack.Navigator>
   );
