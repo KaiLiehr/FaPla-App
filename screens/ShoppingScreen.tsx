@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
+  Alert,
   View,
   Text,
   FlatList,
@@ -85,6 +86,30 @@ const toggleBought = async (item: ShoppingItem) => {
   }
 };
 
+// deletes clicked shopping item
+const deleteItem = async (item: ShoppingItem) => {
+  try {
+    const confirmed = await new Promise<boolean>((resolve) => {
+      Alert.alert(
+        'Delete Item',
+        `Delete "${item.name}"?`,
+        [
+          { text: 'Cancel', style: 'cancel', onPress: () => resolve(false) },
+          { text: 'Delete', style: 'destructive', onPress: () => resolve(true) },
+        ],
+        { cancelable: true }
+      );
+    });
+
+    if (!confirmed) return;
+
+    await api.delete(`shopping-items/${item.id}/`);
+    fetchShoppingItems();
+  } catch (error) {
+    console.error('Delete item error:', error);
+  }
+};
+
 const renderItem = ({ item }: { item: ShoppingItem }) => {
   return (
     <TouchableOpacity
@@ -92,6 +117,8 @@ const renderItem = ({ item }: { item: ShoppingItem }) => {
       onPress={() => toggleBought(item)}
     >
       <View style={[styles.cardRow, item.bought && styles.boughtItem]}>
+
+        
 
         {/* Checkbox */}
         <MaterialIcons
@@ -129,6 +156,17 @@ const renderItem = ({ item }: { item: ShoppingItem }) => {
             </Text>
           ) : null}
         </View>
+
+        {/* DELETE ICON */}
+        <TouchableOpacity
+          style={styles.deleteIcon}
+          onPress={(e) => {
+            e.stopPropagation();
+            deleteItem(item);
+          }}
+        >
+        <MaterialIcons name="delete" size={28} color="#d32f2f" />
+        </TouchableOpacity>
 
       </View>
     </TouchableOpacity>
@@ -235,7 +273,7 @@ const styles = StyleSheet.create({
   },
   cardRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
     padding: 16,
     borderRadius: 12,
@@ -251,6 +289,13 @@ const styles = StyleSheet.create({
   },
   boughtItem: {
     opacity: 0.6,
+  },
+  deleteIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,          // increases clickable area??
+    marginLeft: 8,
+    borderRadius: 20, // subtle touch feedback shape
   },
 });
 
