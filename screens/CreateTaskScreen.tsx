@@ -12,6 +12,7 @@ import {
 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+import { useHouseholds } from '../context/HouseholdContext';
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
 
@@ -22,7 +23,8 @@ const CreateTaskScreen = () => {
   const [description, setDescription] = useState('');
   const [dueBy, setDueBy] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isPersonal, setIsPersonal] = useState(true);
+  const { households } = useHouseholds();
+  const [selectedHouseholdId, setSelectedHouseholdId] = useState<number | null>(null);
   const [type, setType] = useState('chore');
 
   const createTask = async () => {
@@ -42,10 +44,7 @@ const CreateTaskScreen = () => {
         payload.due_by = dueBy.toISOString();
       }
 
-      if (!isPersonal) {
-        // for now household tasks not implemented in UI
-        payload.scope = null;
-      }
+      payload.scope = selectedHouseholdId; // null = personal
 
       await api.post('tasks/', payload);
 
@@ -115,9 +114,32 @@ const CreateTaskScreen = () => {
         placeholder="chore / cooking / shopping"
       />
 
-      <View style={styles.switchRow}>
-        <Text>Personal Task</Text>
-        <Switch value={isPersonal} onValueChange={setIsPersonal} />
+      <View>
+        <Text style={styles.label}>Scope</Text>
+        {/* Personal Option */}
+        <TouchableOpacity
+          style={[
+            styles.option,
+            selectedHouseholdId === null && styles.selectedOption,
+          ]}
+          onPress={() => setSelectedHouseholdId(null)}
+        >
+          <Text style={styles.optionText}>Personal</Text>
+        </TouchableOpacity>
+
+        {/* Household Options */}
+        {households.map((household) => (
+        <TouchableOpacity
+          key={household.id}
+          style={[
+            styles.option,
+            selectedHouseholdId === household.id && styles.selectedOption,
+          ]}
+          onPress={() => setSelectedHouseholdId(household.id)}
+        >
+          <Text style={styles.optionText}>{household.name}</Text>
+        </TouchableOpacity>
+        ))}
       </View>
 
       <Button title="Create Task" onPress={createTask} />
@@ -155,6 +177,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 16,
     alignItems: 'center',
+  },
+  option: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  selectedOption: {
+    borderColor: '#2e7d32',
+    backgroundColor: '#e8f5e9',
+  },
+  optionText: {
+    fontSize: 14,
   },
 });
 

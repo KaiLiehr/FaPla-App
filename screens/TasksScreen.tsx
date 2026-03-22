@@ -19,9 +19,11 @@ import { TasksStackParamList } from '../types/navigation';
 import api from '../services/api';
 import { Task } from '../types/Task';
 import { useAuth } from '../context/AuthContext';
+import { useHouseholds } from '../context/HouseholdContext';
 
 const TasksScreen = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { households, getHouseholdName, setHouseholds } = useHouseholds();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
@@ -51,6 +53,20 @@ const TasksScreen = () => {
     setRefreshing(true);
     fetchTasks();
   };
+
+
+  // Function to resolve a task's household name
+const resolveHouseholdName = (householdId: number | null) => {
+  const name = getHouseholdName(householdId);
+  if (name === 'Unknown Household' && householdId) {
+    // optional: fetch missing households and update context
+    api.get('my-households/').then(res => {
+      const newHouseholds = res.data.map((h: any) => ({ id: h.id, name: h.name }));
+      setHouseholds(newHouseholds);
+    });
+  }
+  return name;
+};
 
 
   // handles deletion of tasks
@@ -153,7 +169,7 @@ const TasksScreen = () => {
 
         {/* META INFORMATION */}
         <Text style={styles.meta}>
-          {item.scope === null ? 'Personal Task' : 'Household Task'}
+          {resolveHouseholdName(item.scope)}
         </Text>
 
         {item.executors.length > 0 && (

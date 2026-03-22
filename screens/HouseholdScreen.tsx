@@ -11,7 +11,10 @@ import {
 } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
 import { HouseholdStackParamList } from '../types/navigation';
+
+import { useHouseholds } from '../context/HouseholdContext';
 
 import api from '../services/api';
 
@@ -39,12 +42,14 @@ type HouseholdNavProp = NativeStackNavigationProp<
 
 
 const HouseholdScreen = () => {
-  const [households, setHouseholds] = useState<Household[]>([]);
+  const [households, setLocalHouseholds] = useState<Household[]>([]);
+  const { setHouseholds: setHouseholdContext } = useHouseholds();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation<HouseholdNavProp>();
 
+  /*
   const fetchHouseholds = async () => {
     try {
       const response = await api.get('my-households/');
@@ -55,7 +60,32 @@ const HouseholdScreen = () => {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }; */
+
+
+const fetchHouseholds = async () => {
+  try {
+    const response = await api.get('my-households/');
+
+    // 1. Full data for THIS screen
+    setLocalHouseholds(response.data);
+
+    // 2. Lightweight data for CONTEXT (used in TasksScreen)
+    setHouseholdContext(
+      response.data.map((h: Household) => ({
+        id: h.id,
+        name: h.name,
+      }))
+    );
+
+  } catch (error) {
+    console.error('Error fetching households:', error);
+  } finally {
+    setLoading(false);
+    setRefreshing(false);
+  }
+};
+
 
 const leaveHousehold = async (household: Household) => {
   try {
