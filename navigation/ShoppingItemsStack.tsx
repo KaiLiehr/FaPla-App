@@ -6,7 +6,7 @@ import { ShoppingItemsStackParamList } from '../types/navigation';
 import ShoppingScreen from '../screens/ShoppingScreen';
 import ShoppingItemDetailsScreen from '../screens/ShoppingItemDetailsScreen';
 import CreateShoppingItemScreen from '../screens/CreateShoppingItemScreen';
-
+import EditShoppingItemScreen from '../screens/EditShoppingItemScreen';
 
 const Stack = createNativeStackNavigator<ShoppingItemsStackParamList>();
 
@@ -28,6 +28,10 @@ const ShoppingItemsStack = () => {
         name="CreateShoppingItem" 
         component={CreateShoppingItemScreen} 
         options={{ title: 'Create Shopping Item' }}
+      />
+      <Stack.Screen
+        name="EditShoppingItem"
+        component={EditShoppingItemScreen}
       />
     </Stack.Navigator>
   );

@@ -27,7 +27,9 @@ const ShoppingScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   //const [expandedTaskId, setExpandedTaskId] = useState<number | null>(null);
   const { user } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<
+  NativeStackNavigationProp<ShoppingItemsStackParamList>
+>();
 
   const fetchShoppingItems = async () => {
     try {
@@ -156,6 +158,17 @@ const renderItem = ({ item }: { item: ShoppingItem }) => {
             </Text>
           ) : null}
         </View>
+
+        {/* EDIT ICON */}
+        <TouchableOpacity
+          style={styles.editIcon}
+          onPress={(e) => {
+            e.stopPropagation();
+            navigation.navigate('EditShoppingItem', { item });
+          }}
+        >
+          <MaterialIcons name="edit" size={28} color="#1976d2" />
+        </TouchableOpacity>
 
         {/* DELETE ICON */}
         <TouchableOpacity
@@ -296,6 +309,13 @@ const styles = StyleSheet.create({
     padding: 10,          // increases clickable area??
     marginLeft: 8,
     borderRadius: 20, // subtle touch feedback shape
+  },
+  editIcon: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+    marginLeft: 8,
+    borderRadius: 20,
   },
 });
 

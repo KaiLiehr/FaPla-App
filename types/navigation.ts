@@ -1,4 +1,4 @@
-import { Task } from '../types/Task';
+import { Task, ShoppingItem } from '../types/Task';
 // Household stack
 export type HouseholdStackParamList = {
   Households: undefined;
@@ -19,4 +19,5 @@ export type ShoppingItemsStackParamList = {
   ShoppingItemsList: undefined;
   ShoppingItemDetails: undefined;
   CreateShoppingItem: undefined;
+  EditShoppingItem: { item: ShoppingItem };
 };
