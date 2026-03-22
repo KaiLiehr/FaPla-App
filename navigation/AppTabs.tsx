@@ -29,9 +29,9 @@ const AppTabs = () => {
             case 'Household':
               iconName = 'group';
               break;
-            case 'Calendar':
+            /*case 'Calendar':
               iconName = 'calendar-today';
-              break;
+              break; */
             case 'Shopping':
               iconName = 'shopping-cart';
               break;
@@ -52,7 +52,7 @@ const AppTabs = () => {
     >
       <Tab.Screen name="Tasks" component={TasksStack} />
       <Tab.Screen name="Household" component={HouseholdStack} />
-      <Tab.Screen name="Calendar" component={CalendarScreen} />
+      {/*<Tab.Screen name="Calendar" component={CalendarScreen} /> */}
       <Tab.Screen name="Shopping" component={ShoppingItemsStack} />
     </Tab.Navigator>
   );
