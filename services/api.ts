@@ -2,8 +2,13 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { triggerLogout } from './authEvents';
 
+const BASE_URL = __DEV__
+  ? 'http://10.0.2.2:8000/'
+  : 'https://fapla-backend.onrender.com/';
+
 const api = axios.create({
-  baseURL: 'http://10.0.2.2:8000/',
+  //baseURL: 'http://10.0.2.2:8000/',
+  baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -53,7 +58,7 @@ api.interceptors.response.use(
         const { refresh } = JSON.parse(credentials.password);
 
         const response = await axios.post(
-          'http://10.0.2.2:8000/api/auth/refresh/',
+          'https://fapla-backend.onrender.com/api/auth/refresh/',
           { refresh }
         );
 
