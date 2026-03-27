@@ -2,13 +2,15 @@ import axios from 'axios';
 import * as Keychain from 'react-native-keychain';
 import { triggerLogout } from './authEvents';
 
+/*
 const BASE_URL = __DEV__
   ? 'http://10.0.2.2:8000/'
-  : 'https://fapla-backend.onrender.com/';
+  : 'https://fapla-backend.onrender.com/'; */
 
 const api = axios.create({
   //baseURL: 'http://10.0.2.2:8000/',
-  baseURL: BASE_URL,
+  //baseURL: BASE_URL,
+  baseURL: 'https://fapla-backend.onrender.com/',
   headers: {
     'Content-Type': 'application/json',
   },
