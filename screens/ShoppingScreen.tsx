@@ -34,7 +34,7 @@ const ShoppingScreen = () => {
   const fetchShoppingItems = async () => {
     try {
       const response = await api.get('shopping-items/');
-      console.log('Shopping Items response:', response.data);
+      //console.log('Shopping Items response:', response.data);
       setShoppingItems(response.data);
     } catch (error) {
       console.error('Error fetching shopping items:', error);

@@ -38,7 +38,7 @@ const TasksScreen = () => {
   const fetchTasks = async () => {
     try {
       const response = await api.get('tasks/');
-      console.log('Tasks response:', response.data);
+      //console.log('Tasks response:', response.data);
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
