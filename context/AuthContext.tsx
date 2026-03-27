@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Fetch user from backend
           const meResponse = await api.get('auth/me/');
           setUser(meResponse.data);
-          console.log("AuthContext user:", meResponse.data);
+          //console.log("AuthContext user:", meResponse.data);
         }
       } catch (e) {
         console.warn('Failed to restore auth state');
@@ -87,7 +87,7 @@ const login = async (username: string, password: string) => {
   const meResponse = await api.get('auth/me/');
   const userData = meResponse.data;
 
-  console.log("Loaded user:", userData);
+  //console.log("Loaded user:", userData);
 
   setUser(userData);
 
