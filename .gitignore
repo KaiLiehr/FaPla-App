@@ -28,6 +28,7 @@ build/
 .idea
 .gradle
 local.properties
+gradle.properties
 *.iml
 *.hprof
 .cxx/
@@ -73,3 +74,28 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+
+*.properties
+
+# Signing
+*.keystore
+*.jks
+key.properties
+
+# Local config
+local.properties
+
+# Build outputs
+/build/
+/app/build/
+*.apk
+*.aab
+
+# IDE
+.idea/
+.gradle/
+*.iml
+
+# OS
+.DS_Store
